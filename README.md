@@ -2,6 +2,8 @@
 
 Code provided in this repository gets the image from camera and prints it out as ASCII art to the serial port.
 
+Tiny OLED (64x32 pixels SSD1306) support is added by kodera2t
+
 ## Build Status
 
 [![Build Status](https://travis-ci.org/igrr/esp32-cam-demo.svg?branch=master)](https://travis-ci.org/igrr/esp32-cam-demo)
