@@ -42,6 +42,27 @@
 #include "lwip/netdb.h"
 #include "lwip/api.h"
 
+
+//-----------------------------------------------------------------------
+///#include <stdbool.h>
+///#include <nvs.h>
+#include "driver/i2c.h"
+//#include "esp_wifi.h"
+#include "xi2c.h"
+#include "fonts.h"
+#include "ssd1306.h"
+#include "nvs_flash.h"
+//#define BLINK_GPIO 4
+#define I2C_EXAMPLE_MASTER_SCL_IO    14    /*!< gpio number for I2C master clock */////////////
+#define I2C_EXAMPLE_MASTER_SDA_IO    13    /*!< gpio number for I2C master data  *//////////////
+#define I2C_EXAMPLE_MASTER_NUM I2C_NUM_1   /*!< I2C port number for master dev */
+#define I2C_EXAMPLE_MASTER_TX_BUF_DISABLE   0   /*!< I2C master do not need buffer */
+#define I2C_EXAMPLE_MASTER_RX_BUF_DISABLE   0   /*!< I2C master do not need buffer */
+#define I2C_EXAMPLE_MASTER_FREQ_HZ    100000     /*!< I2C master clock frequency */
+
+/////--------------------------------------------------------------------
+
+
 static const char* TAG = "camera_demo";
 
 int state = 0;
@@ -209,12 +230,34 @@ static void http_server(void *pvParameters)
     netconn_delete(conn);
 }
 
+/**
+* @brief i2c master initialization
+*/
+void i2c_example_master_init()
+{
+    int i2c_master_port = I2C_EXAMPLE_MASTER_NUM;
+    i2c_config_t conf;
+    conf.mode = I2C_MODE_MASTER;
+    conf.sda_io_num = I2C_EXAMPLE_MASTER_SDA_IO;
+    conf.sda_pullup_en = GPIO_PULLUP_ENABLE;
+    conf.scl_io_num = I2C_EXAMPLE_MASTER_SCL_IO;
+    conf.scl_pullup_en = GPIO_PULLUP_ENABLE;
+    conf.master.clk_speed = I2C_EXAMPLE_MASTER_FREQ_HZ;
+    i2c_param_config(i2c_master_port, &conf);
+    i2c_driver_install(i2c_master_port, conf.mode,
+                       I2C_EXAMPLE_MASTER_RX_BUF_DISABLE,
+                       I2C_EXAMPLE_MASTER_TX_BUF_DISABLE, 0);
+}
+
 void app_main()
 {
+
     esp_log_level_set("wifi", ESP_LOG_WARN);
     esp_log_level_set("gpio", ESP_LOG_WARN);
 
     nvs_flash_init();
+    i2c_example_master_init();
+    SSD1306_Init();
     camera_config_t config = {
         .ledc_channel = LEDC_CHANNEL_0,
         .ledc_timer = LEDC_TIMER_0,
@@ -271,6 +314,13 @@ void app_main()
     if (s_pixel_format == CAMERA_PF_JPEG) {
         ESP_LOGI(TAG, "open http://" IPSTR "/stream for multipart/x-mixed-replace stream (use with JPEGs)", IP2STR(&s_ip_addr));
     }
+    SSD1306_GotoXY(32,32);
+    SSD1306_Puts("ESP32 CAM",&Font_7x10, SSD1306_COLOR_WHITE);
+    SSD1306_GotoXY(32, 43);
+    SSD1306_Puts("OV7725", &Font_7x10, SSD1306_COLOR_WHITE);
+    SSD1306_GotoXY(0,53);
+    SSD1306_Puts(ip4addr_ntoa(&s_ip_addr), &Font_7x10, SSD1306_COLOR_WHITE);
+    SSD1306_UpdateScreen();
     xTaskCreate(&http_server, "http_server", 2048, NULL, 5, NULL);
 }
 
