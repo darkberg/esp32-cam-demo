@@ -2,7 +2,7 @@
 
 Code provided in this repository gets the image from camera and prints it out as ASCII art to the serial port.
 
-Tiny OLED (64x32 pixels SSD1306) support is added by kodera2t
+# Tiny OLED (64x32 pixels SSD1306, I2C connected) support is added by kodera2t
 
 ## Build Status
 
