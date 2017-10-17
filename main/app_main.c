@@ -317,7 +317,11 @@ void app_main()
     SSD1306_GotoXY(32,32);
     SSD1306_Puts("ESP32 CAM",&Font_7x10, SSD1306_COLOR_WHITE);
     SSD1306_GotoXY(32, 43);
+    if (camera_model == CAMERA_OV2640){
+    SSD1306_Puts("OV2640", &Font_7x10, SSD1306_COLOR_WHITE);
+    }else{
     SSD1306_Puts("OV7725", &Font_7x10, SSD1306_COLOR_WHITE);
+    }
     SSD1306_GotoXY(0,53);
     SSD1306_Puts(ip4addr_ntoa(&s_ip_addr), &Font_7x10, SSD1306_COLOR_WHITE);
     SSD1306_UpdateScreen();
