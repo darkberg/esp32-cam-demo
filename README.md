@@ -4,6 +4,8 @@ Code provided in this repository gets the image from camera and prints it out as
 
 ### Tiny OLED (64x32 pixels SSD1306, I2C connected) support is added by kodera2t
 
+Ready-made board is available at https://www.tindie.com/products/microwavemont/esp32-pico-cam/
+
 ## Build Status
 
 [![Build Status](https://travis-ci.org/igrr/esp32-cam-demo.svg?branch=master)](https://travis-ci.org/igrr/esp32-cam-demo)
